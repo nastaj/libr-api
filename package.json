@@ -1,0 +1,12 @@
+{
+  "name": "libr-api",
+  "version": "1.0.0",
+  "description": "Library management API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Jakub Nasta",
+  "license": "ISC"
+}
