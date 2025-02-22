@@ -31,3 +31,45 @@ exports.createBook = async (req, res) => {
         console.log(err);
     }
 };
+
+exports.getBook = async (req, res) => {
+    try {
+        res.status(200).json({
+            status: "success",
+            data: {
+                message: "Route in progress..."
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.updateBook = async (req, res) => {
+    try {
+        res.status(200).json({
+            status: "success",
+            data: {
+                message: "Route in progress..."
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+exports.deleteBook = async (req, res) => {
+    try {
+        res.status(200).json({
+            status: "success",
+            data: {
+                message: "Route in progress..."
+            }
+        });
+
+    } catch (err) {
+        console.log(err);
+    }
+};
