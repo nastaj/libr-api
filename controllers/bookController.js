@@ -13,7 +13,11 @@ exports.getAllBooks = async (req, res) => {
             }
         });
     } catch (err) {
-        console.log(err);
+        // 404 NOT FOUND
+        res.status(404).json({
+            status: "fail",
+            message: err
+        });
     }
 };
 
@@ -21,55 +25,77 @@ exports.createBook = async (req, res) => {
     try {
         const newBook = await Book.create(req.body);
 
-        res.status(200).json({
+        // 201 CREATED
+        res.status(201).json({
             status: "success",
             data: {
                 book: newBook
             }
         });
     } catch (err) {
-        console.log(err);
+        // 400 BAD REQUEST
+        res.status(400).json({
+            status: "fail",
+            message: err
+        });
     }
 };
 
 exports.getBook = async (req, res) => {
     try {
+        const book = await Book.findById(req.params.id);
+
         res.status(200).json({
             status: "success",
             data: {
-                message: "Route in progress..."
+                book
             }
         });
 
     } catch (err) {
-        console.log(err);
+        res.status(404).json({
+            status: "fail",
+            message: err
+        });
     }
 };
 
 exports.updateBook = async (req, res) => {
     try {
+        const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+            runValidators: true
+        });
+
         res.status(200).json({
             status: "success",
             data: {
-                message: "Route in progress..."
+                book: updatedBook
             }
         });
 
     } catch (err) {
-        console.log(err);
+        // 400 BAD REQUEST
+        res.status(400).json({
+            status: "fail",
+            message: err
+        });
     }
 };
 
 exports.deleteBook = async (req, res) => {
     try {
-        res.status(200).json({
+        await Book.findByIdAndDelete(req.params.id);
+
+        // 204 NO CONTENT
+        res.status(204).json({
             status: "success",
-            data: {
-                message: "Route in progress..."
-            }
+            data: null,
         });
 
     } catch (err) {
-        console.log(err);
+        res.status(400).json({
+            status: "fail",
+            message: err
+        });
     }
 };
