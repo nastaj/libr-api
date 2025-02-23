@@ -99,3 +99,33 @@ exports.deleteBook = async (req, res) => {
         });
     }
 };
+
+exports.borrowBook = async (req, res) => {
+    try {
+        // Find book by ID
+        const book = await Book.findById(req.params.id);
+
+        // Update stock and availability
+        const borrowedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            {
+                $inc: { stockCount: -1 }, // Decrease stock count by 1
+                $set: { availability: book.stockCount - 1 > 0 } // Set availability based on new stock count
+            },
+            { new: true } // Return the updated document
+        );
+
+        // Send response
+        res.status(200).json({
+            status: "success",
+            data: {
+                book: borrowedBook
+            }
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: "fail",
+            message: err
+        });
+    }
+};
