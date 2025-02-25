@@ -12,4 +12,6 @@ router.route("/:id").get(bookController.getBook).patch(bookController.updateBook
 
 router.route("/:id/borrow").patch(bookController.borrowBook);
 
+router.route("/:id/return").patch(bookController.returnBook);
+
 module.exports = router;

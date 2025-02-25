@@ -102,17 +102,18 @@ exports.deleteBook = async (req, res) => {
 
 exports.borrowBook = async (req, res) => {
     try {
-        // Find book by ID
-        const book = await Book.findById(req.params.id);
+        const borrowedBook = await Book.findOneAndUpdate(
+            // Find book by ID and make sure it's in the stock
+            { _id: req.params.id, stockCount: { $gt: 0 } },
+            [
+                // Decrease stockCount by 1
+                { $set: { stockCount: { $subtract: ["$stockCount", 1] } } },
 
-        // Update stock and availability
-        const borrowedBook = await Book.findByIdAndUpdate(
-            req.params.id,
-            {
-                $inc: { stockCount: -1 }, // Decrease stock count by 1
-                $set: { availability: book.stockCount - 1 > 0 } // Set availability based on new stock count
-            },
-            { new: true } // Return the updated document
+                // Update availability
+                { $set: { availability: { $gt: [{ $subtract: ["$stockCount", 1] }, 0] } } }
+            ],
+            // Return updated document
+            { new: true }
         );
 
         // Send response
@@ -122,6 +123,32 @@ exports.borrowBook = async (req, res) => {
                 book: borrowedBook
             }
         });
+    } catch (err) {
+        res.status(400).json({
+            status: "fail",
+            message: err
+        });
+    }
+};
+
+exports.returnBook = async (req, res) => {
+    try {
+        const returnedBook = await Book.findByIdAndUpdate(
+            req.params.id,
+            {
+                $inc: { stockCount: 1 },
+                $set: { availability: true }
+            },
+            { new: true }
+        );
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                book: returnedBook
+            }
+        });
+
     } catch (err) {
         res.status(400).json({
             status: "fail",
